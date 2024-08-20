@@ -4,6 +4,9 @@ import mongoose from "mongoose"
 import {DB_NAME} from "./constants.js"
 import express from "express"
 import connectDB from "./db/index.js"
+import cors from "cors"
+import cookieParser from "cookie-parser"
+// import app from "app.js"
 dotenv.config({
     path:"./env"
 })
@@ -15,7 +18,20 @@ connectDB().then(()=>{
 }).catch((err)=>{console.log("db connection error",err)})
 
 
+app.use(cors({
+    origin:process.env.CORS_ORIGIN,
+    credentials:true
+}))
+app.use(express.json({limit:"16kb"}))
+app.use(express.urlencoded({extended:true,limit:"16kb"}))
+app.use(express.static("public"))
+app.use(cookieParser())
 
+//routes import
+import userRouter from "./routers/user.routes.js"
+//routs decalaration
+// app.use("/users",userRouter)
+ app.use("/api/v1/users",userRouter)
 
 
 // function connectDB(){}
